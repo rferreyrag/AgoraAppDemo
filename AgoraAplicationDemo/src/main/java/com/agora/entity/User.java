@@ -1,4 +1,5 @@
 package com.agora.entity;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -8,48 +9,63 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.JoinColumn;
-
-@Entity
+@Entity 
 public class User implements Serializable{
 
-	private static final long serialVersionUID = -6833167247955613395L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1671417246199538663L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="native")
 	@GenericGenerator(name="native",strategy="native")
 	private Long id;
 	
-	@Column 
+	@Column
+	@NotBlank
 	private String firstName;
-	@Column 
+	@Column
+	@NotBlank
 	private String lastName;
-	@Column(unique = true) 
+	@Column
+	@NotBlank
 	private String email;
-	@Column(unique = true) 
+	@Column
+	@NotBlank
 	private String username;
 	@Column
+	@NotBlank
 	private String password;
 	
-	@Transient 
+	@Transient
 	private String confirmPassword;
 	
+	@Size(min=1)
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="user_roles"
-		,joinColumns=@JoinColumn(name="user_id")
-		,inverseJoinColumns=@JoinColumn(name="role_id"))
+	@JoinTable(name = "user_roles",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="role_id"))
 	private Set<Role> roles;
-	
-	public User() {	}
-	
+
+	public User() {
+		super();
+	}
+
 	public User(Long id) {
+		super();
 		this.id = id;
-	}       //Getters, Setters, HashCode, Equals & ToString Functions
+	}
 
 	public Long getId() {
 		return id;
@@ -106,12 +122,12 @@ public class User implements Serializable{
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
 	}
-
-	public Set getRoles() {
+	
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 
@@ -188,6 +204,5 @@ public class User implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
+
 }

@@ -1,4 +1,13 @@
-<form class="form" role="form" autocomplete="off"  th:object="${userForm}" th:action="@{/userForm}" method="post">
+<!--<div th:with="disableFields=!${editMode} and ${#authorization.expression('hasRole(''ROLE_USER'')')}">-->
+
+<form class="form" role="form" autocomplete="off"  th:object="${userForm}" th:action="${editMode} ?@{/editUser} :@{/userForm}" method="post">
+	<!--Es necesario para poder pasar la validacion del Model-->
+	<input class="form-control" type=hidden th:field="${userForm.id}"  th:if="${editMode}">
+	<input class="form-control" type=hidden name="password" value="xxxx" th:if="${editMode}">
+	<!--quita el comentario si quieres mantener la validacion @NotBlank del campo confirmPassword
+		 <input class="form-control" type=hidden name="confirmPassword" value="xxxx" th:if="${editMode}">
+	 -->
+
 	<div class="form-group row">
 		<label class="col-lg-3 col-form-label form-control-label">First name</label>
 		<div class="col-lg-9">
@@ -39,14 +48,16 @@
 		</div>
 	</div>
 	
-	<div class="form-group row">
+	
+	
+	<div class="form-group row" th:if="${editMode==null or editMode==false}">
 		<label class="col-lg-3 col-form-label form-control-label">Password</label>
 		<div class="col-lg-9">
 			<input class="form-control" type="password" th:field="${userForm.password}">
 			<div class="alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name Error</div>
 		</div>
 	</div>
-	<div class="form-group row">
+	<div class="form-group row" th:if="${editMode==null or editMode==false}">
 		<label class="col-lg-3 col-form-label form-control-label">Confirm</label>
 		<div class="col-lg-9">
 			<input class="form-control" type="password" th:field="${userForm.confirmPassword}">
@@ -55,10 +66,11 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-lg-12 text-center">
-			<input type="reset" class="btn btn-secondary" value="Cancel">
+			<a class="btn btn-secondary"  th:href="@{'/userForm/cancel'}">Cancel</a>
 			<input type="submit" class="btn btn-primary"
-				value="Save Changes">
+				value="Save Changes" th:value="${editMode}?'Save User':'Create User'">
 		</div>
 	</div>
 	<div class="alert alert-danger text-center" th:if="${formErrorMessage}" th:text="${formErrorMessage}">Error MEssage</div>
 </form>
+<!--</div>-->

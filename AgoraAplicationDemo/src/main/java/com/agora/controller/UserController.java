@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.agora.entity.dto.ChangePasswordForm;
+import com.agora.Exception.UsernameOrIdNotFound;
 import com.agora.entity.User;
 import com.agora.repository.RoleRepository;
 import com.agora.service.UserService;
@@ -124,8 +127,9 @@ public class UserController {
 	public String deleteUser(Model model, @PathVariable(name="id") Long id) {
 		try {
 			userService.deleteUser(id);
-		} catch (Exception e) {
-			model.addAttribute("deleteError","The user could not be deleted.");
+		} 
+		catch (UsernameOrIdNotFound uoin) {
+			model.addAttribute("listErrorMessage",uoin.getMessage());
 		}
 		return userForm(model);
 	}
